@@ -37,8 +37,21 @@ export default {
     }
   },
   onLoad(options) {
-    this.shopName = options.shopName
-    this.shopGoods = goodsData[this.shopName].map(g => ({ ...g })) // 深拷贝
+    console.log('接收到的参数:', options)
+    this.shopName = options.shopName || options.shop
+    console.log('商家名称:', this.shopName)
+    console.log('可用商家:', Object.keys(goodsData))
+    
+    if (this.shopName && goodsData[this.shopName]) {
+      this.shopGoods = goodsData[this.shopName].map(g => ({ ...g })) // 深拷贝
+      console.log('商品列表:', this.shopGoods)
+    } else {
+      console.error('未找到商家:', this.shopName)
+      uni.showToast({
+        title: '商家不存在',
+        icon: 'none'
+      })
+    }
   },
   methods: {
     increase(item) {
