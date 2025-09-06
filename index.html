@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>采购订单系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            color: white;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .shop-list {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .shop-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .shop-item:last-child {
+            border-bottom: none;
+        }
+        
+        .shop-item:hover {
+            background-color: #f8f8f8;
+        }
+        
+        .shop-info {
+            flex: 1;
+        }
+        
+        .shop-name {
+            font-size: 18px;
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .shop-desc {
+            font-size: 14px;
+            color: #999;
+        }
+        
+        .arrow {
+            font-size: 20px;
+            color: #ccc;
+        }
+        
+        .cart-entry {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🛒</div>
+            <div class="title">采购订单系统</div>
+        </div>
+        
+        <div class="shop-list" id="shopList">
+            <!-- 商家列表将通过 JavaScript 动态生成 -->
+        </div>
+        
+        <a href="cart.html" class="cart-entry">
+            购物车 (<span id="cartTotal">0</span>)
+        </a>
+    </div>
+
+    <script>
+        // 商品数据
+        const goodsData = {
+            "快驴": [
+                { "id": 1, "name": "盐", "count": 0 },
+                { "id": 2, "name": "味精", "count": 0 },
+                { "id": 3, "name": "鸡精", "count": 0 },
+                { "id": 4, "name": "生抽", "count": 0 },
+                { "id": 5, "name": "老抽", "count": 0 },
+                { "id": 6, "name": "耗油", "count": 0 },
+                { "id": 7, "name": "花椒油", "count": 0 },
+                { "id": 9, "name": "菜籽油", "count": 0 },
+                { "id": 10, "name": "胡椒粉", "count": 0 },
+                { "id": 11, "name": "孜然粉", "count": 0 },
+                { "id": 12, "name": "风车生粉", "count": 0 },
+                { "id": 13, "name": "辣椒面", "count": 0 },
+                { "id": 14, "name": "干辣椒段", "count": 0 },
+                { "id": 15, "name": "干辣椒王（整个红辣椒）", "count": 0 },
+                { "id": 16, "name": "黄豆", "count": 0 },
+                { "id": 17, "name": "桂皮", "count": 0 },
+                { "id": 18, "name": "八角", "count": 0 },
+                { "id": 19, "name": "十三香", "count": 0 },
+                { "id": 20, "name": "蒸鱼豉油", "count": 0 },
+                { "id": 21, "name": "剁辣椒", "count": 0 },
+                { "id": 22, "name": "辣椒酱", "count": 0 },
+                { "id": 23, "name": "陈醋", "count": 0 },
+                { "id": 24, "name": "白醋", "count": 0 },
+                { "id": 25, "name": "高度白酒53度", "count": 0 },
+                { "id": 26, "name": "小米辣（青泡椒）", "count": 0 },
+                { "id": 27, "name": "阳江豆豉", "count": 0 },
+                { "id": 28, "name": "白砂糖", "count": 0 },
+                { "id": 29, "name": "外婆菜", "count": 0 },
+                { "id": 30, "name": "梅菜扣肉", "count": 0 },
+                { "id": 31, "name": "雪碧", "count": 0 },
+                { "id": 32, "name": "百事可乐", "count": 0 },
+                { "id": 33, "name": "王老吉", "count": 0 },
+                { "id": 34, "name": "农夫山泉矿泉水", "count": 0 },
+                { "id": 35, "name": "绿豆沙", "count": 0 },
+                { "id": 36, "name": "方竹笋", "count": 0 },
+                { "id": 37, "name": "酸菜", "count": 0 },
+                { "id": 39, "name": "生姜", "count": 0 },
+                { "id": 40, "name": "蒜米", "count": 0 },
+                { "id": 65, "name": "西红柿", "count": 0 },
+                { "id": 80, "name": "海带", "count": 0 }
+            ],
+            "华兴街14号": [
+                { "id": 8, "name": "大豆油", "count": 0 },
+                { "id": 38, "name": "大米", "count": 0 },
+                { "id": 82, "name": "鸡蛋", "count": 0 }
+            ],
+            "肖红梅": [
+                { "id": 61, "name": "芹菜", "count": 0 },
+                { "id": 62, "name": "腐竹", "count": 0 },
+                { "id": 63, "name": "紫长茄子", "count": 0 },
+                { "id": 64, "name": "散花菜", "count": 0 },
+                { "id": 66, "name": "油麦菜", "count": 0 },
+                { "id": 67, "name": "四季豆", "count": 0 },
+                { "id": 69, "name": "土豆", "count": 0 },
+                { "id": 70, "name": "包菜", "count": 0 },
+                { "id": 71, "name": "黄瓜", "count": 0 },
+                { "id": 72, "name": "火腿肠", "count": 0 },
+                { "id": 73, "name": "干豆角", "count": 0 },
+                { "id": 74, "name": "苦瓜", "count": 0 },
+                { "id": 75, "name": "酸菜", "count": 0 },
+                { "id": 76, "name": "白头蒜苗，大蒜叶", "count": 0 },
+                { "id": 78, "name": "冬瓜", "count": 0 },
+                { "id": 79, "name": "玉米", "count": 0 },
+                { "id": 81, "name": "白杆空心菜", "count": 0 },
+                { "id": 41, "name": "螺丝椒", "count": 0 },
+                { "id": 42, "name": "湖南椒", "count": 0 },
+                { "id": 43, "name": "小米椒", "count": 0 }
+            ],
+            "文武双全大母指": [
+                { "id": 53, "name": "猪瘦肉片", "count": 0 },
+                { "id": 54, "name": "去皮猪肥肉片", "count": 0 },
+                { "id": 55, "name": "五花肉", "count": 0 },
+                { "id": 56, "name": "猪肝切片", "count": 0 },
+                { "id": 57, "name": "猪前脚切块", "count": 0 },
+                { "id": 58, "name": "3肥7瘦肉沫", "count": 0 },
+                { "id": 59, "name": "猪精前小块", "count": 0 },
+                { "id": 60, "name": "猪瘦肉丝", "count": 0 }
+            ],
+            "A12号豆腐档": [
+                { "id": 44, "name": "嫩豆腐", "count": 0 },
+                { "id": 45, "name": "攸县香干", "count": 0 }
+            ],
+            "F35": [
+                { "id": 46, "name": "牛蛙", "count": 0 },
+                { "id": 47, "name": "草鱼块", "count": 0 },
+                { "id": 48, "name": "鲤鱼", "count": 0 }
+            ],
+            "D30": [
+                { "id": 51, "name": "三黄鸡块", "count": 0 }
+            ],
+            "D129": [
+                { "id": 52, "name": "牛瘦肉片", "count": 0 }
+            ],
+            "淡水锦龙冻品": [
+                { "id": 49, "name": "黑鱼片", "count": 0 },
+                { "id": 50, "name": "鸡肾片", "count": 0 }
+            ],
+            "易订货": [
+                { "id": 77, "name": "腊肉", "count": 0 }
+            ]
+        };
+
+        // 初始化页面
+        function init() {
+            renderShopList();
+            updateCartTotal();
+        }
+
+        // 渲染商家列表
+        function renderShopList() {
+            const shopList = document.getElementById('shopList');
+            const shopNames = Object.keys(goodsData);
+            
+            shopList.innerHTML = shopNames.map(shopName => `
+                <a href="shop.html?shop=${encodeURIComponent(shopName)}" class="shop-item">
+                    <div class="shop-info">
+                        <div class="shop-name">${shopName}</div>
+                        <div class="shop-desc">点击查看商品列表</div>
+                    </div>
+                    <div class="arrow">></div>
+                </a>
+            `).join('');
+        }
+
+        // 更新购物车总数
+        function updateCartTotal() {
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const total = cart.reduce((sum, item) => sum + item.count, 0);
+            document.getElementById('cartTotal').textContent = total;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
