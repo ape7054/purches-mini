@@ -15,6 +15,10 @@ unpackage/
 *.swp
 *.swo
 
+# Prompts and AI templates
+prompts/
+conversations/
+
 # OS generated files
 .DS_Store
 .DS_Store?

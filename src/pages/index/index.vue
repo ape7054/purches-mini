@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import goodsData from "@/static/data.json"
+import goodsData from "/static/data.json"
 
 export default {
 	data() {
@@ -37,28 +37,20 @@ export default {
 			cartTotal: 0
 		}
 	},
-	onLoad() {
+	mounted() {
 		// 从数据中获取所有商家名称
 		this.shopNames = Object.keys(goodsData)
 		this.loadCartTotal()
 	},
-	onShow() {
-		// 每次显示页面时更新购物车数量
-		this.loadCartTotal()
-	},
 	methods: {
 		goToShop(shopName) {
-			uni.navigateTo({
-				url: `/pages/shop/shop?shopName=${encodeURIComponent(shopName)}`
-			})
+			this.$router.push(`/shop/${encodeURIComponent(shopName)}`)
 		},
 		goToCart() {
-			uni.navigateTo({
-				url: '/pages/cart/cart'
-			})
+			this.$router.push('/cart')
 		},
 		loadCartTotal() {
-			const cart = uni.getStorageSync('cart') || []
+			const cart = JSON.parse(localStorage.getItem('cart') || '[]')
 			this.cartTotal = cart.reduce((sum, item) => sum + item.count, 0)
 		}
 	}
@@ -108,13 +100,14 @@ export default {
 	padding: 30rpx 20rpx;
 	border-bottom: 1px solid #f0f0f0;
 	transition: background-color 0.3s;
+	cursor: pointer;
 }
 
 .shop-item:last-child {
 	border-bottom: none;
 }
 
-.shop-item:active {
+.shop-item:hover {
 	background-color: #f8f8f8;
 }
 
@@ -142,7 +135,7 @@ export default {
 
 .cart-entry {
 	position: fixed;
-	bottom: 40rpx;
+	bottom: 100rpx;
 	left: 50%;
 	transform: translateX(-50%);
 	background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
@@ -150,6 +143,7 @@ export default {
 	padding: 20rpx 40rpx;
 	border-radius: 40rpx;
 	box-shadow: 0 8rpx 20rpx rgba(255, 107, 107, 0.3);
+	cursor: pointer;
 }
 
 .cart-text {

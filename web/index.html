@@ -294,7 +294,7 @@
         // 加载商品数据
         async function loadProducts() {
             try {
-                const response = await fetch('static/products.json');
+                const response = await fetch('./products.json');
                 allProducts = await response.json();
                 
                 // 为每个商品添加count属性
