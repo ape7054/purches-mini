@@ -17,6 +17,11 @@
     <view class="cart-btn" @click="goCart">
       去购物车 ({{ cartTotal }})
     </view>
+    
+    <!-- 订单按钮 -->
+    <view class="orders-btn" @click="goOrders">
+      查看订单
+    </view>
   </view>
 </template>
 
@@ -74,6 +79,10 @@ export default {
     },
     goCart() {
       uni.navigateTo({ url: "/pages/cart/cart" })
+    },
+    goOrders() {
+      // tabBar页面跳转
+      uni.switchTab({ url: "/pages/orders/orders" })
     }
   }
 }
@@ -84,5 +93,6 @@ export default {
 .title { font-size: 36rpx; font-weight: bold; margin-bottom: 20rpx; }
 .goods-item { display: flex; justify-content: space-between; align-items: center; padding: 15rpx 0; border-bottom: 1px solid #eee; font-size: 28rpx; }
 .counter { display: flex; align-items: center; gap: 10rpx; }
-.cart-btn { position: fixed; bottom: 40rpx; left: 50%; transform: translateX(-50%); background: #007aff; color: #fff; padding: 20rpx 40rpx; border-radius: 40rpx; }
+.cart-btn { position: fixed; bottom: 40rpx; left: 30%; transform: translateX(-50%); background: #007aff; color: #fff; padding: 20rpx 30rpx; border-radius: 40rpx; }
+.orders-btn { position: fixed; bottom: 40rpx; right: 30%; transform: translateX(50%); background: #28a745; color: #fff; padding: 20rpx 30rpx; border-radius: 40rpx; }
 </style>

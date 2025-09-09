@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>供应商详情</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-btn {
+            background: #f8f9fa;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-right: 15px;
+            font-size: 18px;
+            color: #6c757d;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            flex: 1;
+        }
+        
+        .supplier-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .supplier-name {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .supplier-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        
+        .summary-item {
+            text-align: center;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .summary-value {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .order-detail {
+            background: white;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-number {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .order-status {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .products-list {
+            margin-bottom: 15px;
+        }
+        
+        .product-detail {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #28a745;
+        }
+        
+        .product-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .product-name {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .product-price {
+            font-size: 16px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .product-description {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+            font-style: italic;
+        }
+        
+        .order-footer {
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+        
+        .total-original {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .total-final {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .final-price-input {
+            border: 2px solid #007aff;
+            border-radius: 5px;
+            padding: 5px 8px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #e74c3c;
+            width: 100px;
+            text-align: center;
+        }
+        
+        .order-actions {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .copy-btn-full {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .copy-btn-full:hover {
+            background: #138496;
+        }
+        
+        .custom-content-section {
+            margin: 20px 0;
+            padding: 15px 0;
+            border-top: 1px solid #eee;
+        }
+        
+        .custom-content-label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .custom-content-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+            resize: vertical;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        
+        .custom-content-input:focus {
+            outline: none;
+            border-color: #007aff;
+            box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
+        }
+        
+        .custom-content-input::placeholder {
+            color: #999;
+        }
+        
+        .order-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .empty-orders {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+        
+        .empty-orders h3 {
+            margin-bottom: 10px;
+        }
+        
+        /* TabBar样式 */
+        .tabbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            z-index: 1000;
+        }
+        
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: #7A7E83;
+            transition: color 0.3s;
+        }
+        
+        .tab-item.active {
+            color: #007aff;
+        }
+        
+        .tab-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .shop-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237A7E83'%3E%3Cpath d='M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z'/%3E%3C/svg%3E");
+        }
+        
+        .orders-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237A7E83'%3E%3Cpath d='M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM18 20H6V4h7v5h5v11zM8 12h8v2H8v-2zm0 4h5v2H8v-2z'/%3E%3C/svg%3E");
+        }
+        
+        .orders-icon.active {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23007aff'%3E%3Cpath d='M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM18 20H6V4h7v5h5v11zM8 12h8v2H8v-2zm0 4h5v2H8v-2z'/%3E%3C/svg%3E");
+        }
+        
+        .tab-text {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">←</button>
+            <div class="title" id="pageTitle">供应商详情</div>
+        </div>
+        
+        <div class="supplier-header" id="supplierHeader">
+            <!-- 供应商信息将通过JavaScript动态生成 -->
+        </div>
+        
+        <div class="orders-detail" id="ordersDetail">
+            <!-- 订单详情将通过JavaScript动态生成 -->
+        </div>
+        
+        <div class="empty-orders" id="emptyOrders" style="display: none;">
+            <div style="font-size: 48px; margin-bottom: 20px;">📋</div>
+            <h3>未找到该供应商的订单</h3>
+            <p>可能订单已被清空或供应商名称有误</p>
+        </div>
+    </div>
+
+    <!-- TabBar -->
+    <div class="tabbar">
+        <a href="#" class="tab-item" onclick="event.preventDefault(); goToShop();">
+            <div class="tab-icon shop-icon"></div>
+            <span class="tab-text">下单</span>
+        </a>
+        <a href="#" class="tab-item active" onclick="event.preventDefault(); goToOrders();">
+            <div class="tab-icon orders-icon active"></div>
+            <span class="tab-text">订单</span>
+        </a>
+    </div>
+
+    <script>
+        let currentSupplier = '';
+        
+        // 页面初始化
+        function init() {
+            // 从URL参数获取供应商名称
+            const urlParams = new URLSearchParams(window.location.search);
+            currentSupplier = decodeURIComponent(urlParams.get('supplier') || '');
+            
+            if (!currentSupplier) {
+                showEmptyState();
+                return;
+            }
+            
+            loadSupplierDetails();
+        }
+        
+        // 加载供应商详情
+        function loadSupplierDetails() {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const supplierOrders = orders.filter(order => order.supplier === currentSupplier);
+            
+            if (supplierOrders.length === 0) {
+                showEmptyState();
+                return;
+            }
+            
+            // 更新页面标题
+            document.getElementById('pageTitle').textContent = `${currentSupplier} - 详情`;
+            
+            // 计算统计信息
+            const totalProducts = supplierOrders.reduce((sum, order) => sum + order.products.length, 0);
+            const totalPrice = supplierOrders.reduce((sum, order) => sum + order.totalPrice, 0);
+            const orderCount = supplierOrders.length;
+            
+            // 渲染供应商头部
+            document.getElementById('supplierHeader').innerHTML = `
+                <div class="supplier-name">${currentSupplier}</div>
+                <div class="supplier-summary">
+                    <div class="summary-item">
+                        <div class="summary-label">商品种类</div>
+                        <div class="summary-value">${totalProducts} 种</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">订单金额</div>
+                        <div class="summary-value">¥${totalPrice.toFixed(2)}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">订单数量</div>
+                        <div class="summary-value">${orderCount} 个</div>
+                    </div>
+                </div>
+            `;
+            
+            // 渲染订单详情
+            let ordersHTML = '';
+            supplierOrders.forEach((order, index) => {
+                const orderNumber = index + 1;
+                const orderNo = `ORD${order.id.toString().slice(-6)}`;
+                const orderTime = new Date(order.createTime).toLocaleString('zh-CN');
+                const copyContent = generateCopyContent(order.products);
+                
+                ordersHTML += `
+                    <div class="order-detail">
+                        <div class="order-header">
+                            <span class="order-number">订单号：${orderNo}</span>
+                            <span class="order-status">${order.status}</span>
+                        </div>
+                            <div class="products-list">
+                                ${order.products.map((item, itemIndex) => `
+                                    <div class="product-detail">
+                                        <div class="product-info">
+                                            <span class="product-name">${item.name} × ${item.count} ${item.unit}</span>
+                                            <span class="product-price">¥${item.totalPrice.toFixed(2)}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        <div class="order-footer">
+                            <div class="total-section">
+                                <div class="total-original">
+                                    <span>原始总价：¥<span id="original-${orderNumber}">${order.totalPrice.toFixed(2)}</span></span>
+                                </div>
+                                <div class="total-final">
+                                    <span>最终结算：¥</span>
+                                    <input type="number" step="0.01" value="${order.totalPrice.toFixed(2)}" 
+                                           id="final-${orderNumber}" class="final-price-input" 
+                                           onchange="updateFinalPrice(${orderNumber})">
+                                </div>
+                            </div>
+                            <div class="custom-content-section">
+                                <label for="custom-content-${orderNumber}" class="custom-content-label">
+                                    📝 补充说明：
+                                </label>
+                                <textarea id="custom-content-${orderNumber}" class="custom-content-input" 
+                                         placeholder="请输入额外的备注或具体要求..."
+                                         rows="3"></textarea>
+                            </div>
+                            <div class="order-actions">
+                                <button class="copy-btn-full" onclick="copyOrderContent('${currentSupplier}', ${orderNumber})">
+                                    📋 复制订单
+                                </button>
+                            </div>
+                            <div class="order-time">${orderTime}</div>
+                        </div>
+                        <textarea id="copy-content-${orderNumber}" style="display: none;">${copyContent}</textarea>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('ordersDetail').innerHTML = ordersHTML;
+        }
+        
+        // 显示空状态
+        function showEmptyState() {
+            document.getElementById('supplierHeader').style.display = 'none';
+            document.getElementById('ordersDetail').style.display = 'none';
+            document.getElementById('emptyOrders').style.display = 'block';
+        }
+        
+        // 生成复制内容 - 按照用户要求的格式：备注+数量+单位
+        function generateCopyContent(items) {
+            let content = '';
+            items.forEach(item => {
+                content += `${item.description}，${item.count} ${item.unit}\n\n`;
+            });
+            content += '明天早上 8 点前送到，谢谢！';
+            return content;
+        }
+        
+        // 复制订单内容
+        function copyOrderContent(supplierName, orderNumber) {
+            const copyContent = document.getElementById(`copy-content-${orderNumber}`).value;
+            const customContent = document.getElementById(`custom-content-${orderNumber}`).value;
+            
+            // 组合复制内容：原始商品内容 + 用户自定义内容
+            let finalContent = copyContent;
+            
+            if (customContent.trim()) {
+                // 如果有自定义内容，在商品内容和配送时间之间插入
+                const deliveryText = '明天早上 8 点前送到，谢谢！';
+                const contentWithoutDelivery = copyContent.replace(deliveryText, '').trim();
+                finalContent = contentWithoutDelivery + '\n\n' + customContent.trim() + '\n\n' + deliveryText;
+            }
+            
+            // 复制到剪贴板
+            navigator.clipboard.writeText(finalContent).then(() => {
+                alert('订单内容已复制到剪贴板！');
+            }).catch(() => {
+                // 备用方案
+                const textArea = document.createElement('textarea');
+                textArea.value = finalContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('订单内容已复制到剪贴板！');
+            });
+        }
+        
+        // 发送到微信
+        function sendToWhatsApp(supplierName, orderNumber) {
+            copyOrderContent(supplierName, orderNumber);
+            alert('内容已复制，请手动粘贴到微信发送给供应商');
+        }
+        
+        // 更新最终价格
+        function updateFinalPrice(orderNumber) {
+            const finalPrice = document.getElementById(`final-${orderNumber}`).value;
+            console.log(`订单 ${orderNumber} 的最终价格更新为：¥${finalPrice}`);
+        }
+        
+        // 返回上一页
+        function goBack() {
+            window.history.back();
+        }
+        
+        // 去购物页面
+        function goToShop() {
+            window.location.href = 'index.html';
+        }
+        
+        // 去订单页面
+        function goToOrders() {
+            window.location.href = 'orders.html';
+        }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

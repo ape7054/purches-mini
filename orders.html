@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的订单</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            padding-bottom: 60px; /* 为tabbar留出空间 */
+        }
+        
+        .container {
+            padding: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-btn {
+            background: #f8f9fa;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            margin-right: 15px;
+            font-size: 18px;
+            color: #6c757d;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .orders-list {
+            margin-top: 20px;
+        }
+        
+        .supplier-item {
+            background: white;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .supplier-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .supplier-simple {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .supplier-name-only {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .order-number {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .order-status {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-completed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .order-content {
+            margin-bottom: 10px;
+        }
+        
+        .product-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        
+        .product-name {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        .product-price {
+            font-size: 16px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .order-time {
+            font-size: 12px;
+            color: #999;
+            margin-top: 15px;
+        }
+
+        .supplier-summary {
+            margin: 15px 0;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px 0;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .summary-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .click-hint {
+            text-align: center;
+            margin-top: 15px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            color: #007aff;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .supplier-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-radius: 5px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .products-list {
+            margin-bottom: 15px;
+        }
+
+        .product-detail {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-left: 3px solid #28a745;
+        }
+
+        .product-description {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            line-height: 1.4;
+            font-style: italic;
+        }
+
+        .order-footer {
+            border-top: 2px solid #eee;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .total-original {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .total-final {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .final-price-input {
+            border: 2px solid #007aff;
+            border-radius: 5px;
+            padding: 5px 8px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #e74c3c;
+            width: 100px;
+            text-align: center;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+        }
+
+        .copy-btn, .whatsapp-btn {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .copy-btn {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background: #138496;
+        }
+
+        .whatsapp-btn {
+            background: #25d366;
+            color: white;
+        }
+
+        .whatsapp-btn:hover {
+            background: #20b954;
+        }
+
+        /* TabBar样式 */
+        .tabbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: white;
+            border-top: 1px solid #e5e5e5;
+            display: flex;
+            z-index: 1000;
+        }
+        
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: #7A7E83;
+            transition: color 0.3s;
+        }
+        
+        .tab-item.active {
+            color: #007aff;
+        }
+        
+        .tab-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .shop-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237A7E83'%3E%3Cpath d='M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z'/%3E%3C/svg%3E");
+        }
+        
+        .shop-icon.active {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23007aff'%3E%3Cpath d='M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12L8.1 13h7.45c.75 0 1.41-.41 1.75-1.03L21.7 4H5.21l-.94-2H1zm16 16c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z'/%3E%3C/svg%3E");
+        }
+        
+        .orders-icon {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237A7E83'%3E%3Cpath d='M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM18 20H6V4h7v5h5v11zM8 12h8v2H8v-2zm0 4h5v2H8v-2z'/%3E%3C/svg%3E");
+        }
+        
+        .orders-icon.active {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23007aff'%3E%3Cpath d='M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.89 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM18 20H6V4h7v5h5v11zM8 12h8v2H8v-2zm0 4h5v2H8v-2z'/%3E%3C/svg%3E");
+        }
+        
+        .tab-text {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <button class="back-btn" onclick="goBack()">←</button>
+            <div class="title">我的订单</div>
+            <button onclick="clearOrders()" style="background: #ff4757; color: white; border: none; padding: 8px 15px; border-radius: 5px; font-size: 12px; cursor: pointer;">清空</button>
+        </div>
+        
+        <div class="suppliers-list" id="suppliersList">
+            <!-- 供应商列表将通过 JavaScript 动态生成 -->
+        </div>
+        
+        <div class="empty-orders" id="emptyOrders" style="display: none;">
+            <div style="text-align: center; padding: 50px; color: #999;">
+                <div style="font-size: 48px; margin-bottom: 20px;">📋</div>
+                <h3>暂无订单</h3>
+                <p>您还没有添加任何商品到购物车</p>
+                <button onclick="goToShop()" style="margin-top: 20px; background: #007aff; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">去购物</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TabBar -->
+    <div class="tabbar">
+        <a href="#" class="tab-item" onclick="event.preventDefault(); goToShop();">
+            <div class="tab-icon shop-icon"></div>
+            <span class="tab-text">购物</span>
+        </a>
+        <a href="#" class="tab-item active" onclick="event.preventDefault();">
+            <div class="tab-icon orders-icon active"></div>
+            <span class="tab-text">订单</span>
+        </a>
+    </div>
+
+    <script>
+        // 返回上一页
+        function goBack() {
+            window.history.back();
+        }
+
+        // 去购物页面
+        function goToShop() {
+            window.location.href = 'index.html';
+        }
+
+        // 初始化订单页面
+        function init() {
+            loadOrders();
+        }
+
+        // 加载订单数据 - 只显示供应商
+        function loadOrders() {
+            const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+            const suppliersList = document.getElementById('suppliersList');
+            const emptyOrders = document.getElementById('emptyOrders');
+            
+            if (orders.length === 0) {
+                suppliersList.style.display = 'none';
+                emptyOrders.style.display = 'block';
+                return;
+            }
+            
+            suppliersList.style.display = 'block';
+            emptyOrders.style.display = 'none';
+            
+            // 按供应商分组并统计
+            const supplierSummary = {};
+            orders.forEach(order => {
+                const supplier = order.supplier;
+                if (!supplierSummary[supplier]) {
+                    supplierSummary[supplier] = {
+                        supplier: supplier,
+                        totalProducts: 0,
+                        totalPrice: 0,
+                        orderCount: 0,
+                        latestTime: order.createTime
+                    };
+                }
+                
+                supplierSummary[supplier].totalProducts += order.products.length;
+                supplierSummary[supplier].totalPrice += order.totalPrice;
+                supplierSummary[supplier].orderCount += 1;
+                
+                // 更新最新时间
+                if (new Date(order.createTime) > new Date(supplierSummary[supplier].latestTime)) {
+                    supplierSummary[supplier].latestTime = order.createTime;
+                }
+            });
+            
+            // 生成供应商HTML
+            let suppliersHTML = '';
+            Object.values(supplierSummary).forEach(summary => {
+                const latestTime = new Date(summary.latestTime).toLocaleString('zh-CN');
+                
+                suppliersHTML += `
+                    <div class="supplier-item" onclick="goToSupplierDetail('${summary.supplier}')">
+                        <div class="supplier-simple">
+                            <span class="supplier-name-only">${summary.supplier}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            suppliersList.innerHTML = suppliersHTML;
+        }
+
+        // 生成复制内容
+        function generateCopyContent(items) {
+            let content = '';
+            items.forEach(item => {
+                content += `${item.description}，${item.count} ${item.unit}\n\n`;
+            });
+            content += '明天早上 8 点前送到，谢谢！';
+            return content;
+        }
+
+        // 复制订单内容
+        function copyOrderContent(supplierName, orderNumber) {
+            const copyContent = document.getElementById(`copy-content-${orderNumber}`).value;
+            const finalPrice = document.getElementById(`final-${orderNumber}`).value;
+            
+            const fullContent = `供应商：${supplierName}\n\n${copyContent}\n\n最终结算：¥${finalPrice}`;
+            
+            // 复制到剪贴板
+            navigator.clipboard.writeText(fullContent).then(() => {
+                alert('订单内容已复制到剪贴板！');
+            }).catch(() => {
+                // 备用方案
+                const textArea = document.createElement('textarea');
+                textArea.value = fullContent;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('订单内容已复制到剪贴板！');
+            });
+        }
+
+        // 发送到微信（实际上是复制内容）
+        function sendToWhatsApp(supplierName, orderNumber) {
+            copyOrderContent(supplierName, orderNumber);
+            alert('内容已复制，请手动粘贴到微信发送给供应商');
+        }
+
+        // 更新最终价格
+        function updateFinalPrice(orderNumber) {
+            const finalPrice = document.getElementById(`final-${orderNumber}`).value;
+            console.log(`订单 ${orderNumber} 的最终价格更新为：¥${finalPrice}`);
+            // 这里可以保存到localStorage或发送到服务器
+        }
+
+        // 跳转到供应商详情页面
+        function goToSupplierDetail(supplierName) {
+            // 将供应商名称编码并跳转到详情页面
+            const encodedSupplier = encodeURIComponent(supplierName);
+            window.location.href = `supplier-detail.html?supplier=${encodedSupplier}`;
+        }
+
+        // 清空订单（测试功能）
+        function clearOrders() {
+            if (confirm('确定要清空所有订单吗？')) {
+                localStorage.removeItem('orders');
+                loadOrders();
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

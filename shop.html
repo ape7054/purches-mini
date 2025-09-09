@@ -15,6 +15,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: #f5f5f5;
             min-height: 100vh;
+            padding-bottom: 60px; /* 为tabbar留出空间 */
         }
         
         .container {
@@ -151,7 +152,33 @@
         </button>
     </div>
 
+    <!-- TabBar -->
+    <div class="tabbar">
+        <a href="#" class="tab-item active" onclick="event.preventDefault();">
+            <div class="tab-icon shop-icon active"></div>
+            <span class="tab-text">购物</span>
+        </a>
+        <a href="#" class="tab-item" onclick="event.preventDefault(); goToOrders();">
+            <div class="tab-icon orders-icon"></div>
+            <span class="tab-text">订单</span>
+        </a>
+    </div>
+
     <script>
+        // 供应商 ID 映射
+        const shopIdMap = {
+            1: "快驴",
+            2: "华兴街14号", 
+            3: "肖红梅",
+            4: "文武双全大母指",
+            5: "A12号豆腐档",
+            6: "F35",
+            7: "D30",
+            8: "D129",
+            9: "淡水锦龙冻品",
+            10: "易订货"
+        };
+
         // 商品数据
         const goodsData = {
             "快驴": [
@@ -262,19 +289,28 @@
 
         // 初始化页面
         function init() {
-            // 从URL参数获取商家名称
+            // 从URL参数获取商家ID
             const urlParams = new URLSearchParams(window.location.search);
-            currentShop = decodeURIComponent(urlParams.get('shop') || '');
+            const shopId = urlParams.get('id');
             
-            if (!currentShop || !goodsData[currentShop]) {
+            if (!shopId || !shopIdMap[shopId]) {
                 alert('商家不存在');
                 goBack();
                 return;
             }
             
+            // 通过ID获取商家名称
+            currentShop = shopIdMap[shopId];
+            
+            if (!goodsData[currentShop]) {
+                alert('商家数据不存在');
+                goBack();
+                return;
+            }
+            
             // 设置页面标题
-            document.getElementById('shopTitle').textContent = currentShop;
-            document.title = currentShop + ' - 商品列表';
+            document.getElementById('shopTitle').textContent = `${shopId}. ${currentShop}`;
+            document.title = `${shopId}. ${currentShop} - 商品列表`;
             
             // 加载商品数据
             loadShopGoods();
@@ -363,6 +399,11 @@
         // 去购物车
         function goToCart() {
             window.location.href = 'cart.html';
+        }
+
+        // 去订单页面
+        function goToOrders() {
+            window.location.href = 'orders.html';
         }
 
         // 页面加载完成后初始化

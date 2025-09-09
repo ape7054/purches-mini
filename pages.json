@@ -1,15 +1,33 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
 		{
-			"path": "pages/index/index",
+			"path": "pages/order/order",
 			"style": {
-				"navigationBarTitleText": "采购订单系统"
+				"navigationBarTitleText": "产品目录"
+			}
+		},
+		{
+			"path":"pages/orders/orders",
+			"style":{
+				"navigationBarTitleText": "订单"
 			}
 		},
 		{
 			"path": "pages/shop/shop",
 			"style": {
-				"navigationBarTitleText": "商品列表"
+				"navigationBarTitleText": "购物"
+			}
+		},
+		{
+			"path": "pages/detail/detail",
+			"style": {
+				"navigationBarTitleText": "订单详情"
+			}
+		},
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationBarTitleText": "采购订单系统"
 			}
 		},
 		{
@@ -24,6 +42,26 @@
 		"navigationBarTitleText": "采购订单系统",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar": {
+		"color": "#7A7E83",
+		"selectedColor": "#007aff",
+		"borderStyle": "black",
+		"backgroundColor": "#ffffff",
+		"list": [
+			{
+				"pagePath": "pages/order/order",
+				"iconPath": "static/shop.png",
+				"selectedIconPath": "static/shop-active.png",
+				"text": "下单"
+			},
+			{
+				"pagePath": "pages/orders/orders",
+				"iconPath": "static/orders.png",
+				"selectedIconPath": "static/orders-active.png",
+				"text": "订单"
+			}
+		]
 	},
 	"uniIdRouter": {}
 }
