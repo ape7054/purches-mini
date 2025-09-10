@@ -93,12 +93,15 @@ export default {
       return this.cartItems.reduce((sum, item) => sum + (item.price * item.count), 0)
     }
   },
-  mounted() {
+  onLoad() {
+    this.loadCartItems()
+  },
+  onShow() {
     this.loadCartItems()
   },
   methods: {
     loadCartItems() {
-      this.cartItems = JSON.parse(localStorage.getItem('cart') || '[]')
+      this.cartItems = uni.getStorageSync('cart') || []
     },
     
     increaseQuantity(item, index) {
@@ -116,49 +119,76 @@ export default {
     },
     
     removeItem(index) {
-      if (confirm('确定要删除这个商品吗？')) {
-        this.cartItems.splice(index, 1)
-        this.updateCart()
-      }
+      uni.showModal({
+        title: '确认删除',
+        content: '确定要删除这个商品吗？',
+        success: (res) => {
+          if (res.confirm) {
+            this.cartItems.splice(index, 1)
+            this.updateCart()
+          }
+        }
+      })
     },
     
     clearCart() {
-      if (confirm('确定要清空购物车吗？')) {
-        this.cartItems = []
-        this.updateCart()
-        alert('购物车已清空')
-      }
+      uni.showModal({
+        title: '确认清空',
+        content: '确定要清空购物车吗？',
+        success: (res) => {
+          if (res.confirm) {
+            this.cartItems = []
+            this.updateCart()
+            uni.showToast({
+              title: '购物车已清空',
+              icon: 'success'
+            })
+          }
+        }
+      })
     },
     
     updateCart() {
-      localStorage.setItem('cart', JSON.stringify(this.cartItems))
+      uni.setStorageSync('cart', this.cartItems)
     },
     
     checkout() {
       if (this.cartItems.length === 0) {
-        alert('购物车为空')
+        uni.showToast({
+          title: '购物车为空',
+          icon: 'none'
+        })
         return
       }
       
-      if (confirm(`共 ${this.totalItems} 件商品，总金额 ¥${this.totalAmount.toFixed(2)}，确认提交订单吗？`)) {
-        // 保存订单到本地存储
-        this.saveOrder()
-        
-        alert('订单提交成功')
-        
-        // 清空购物车
-        this.cartItems = []
-        this.updateCart()
-        
-        // 跳转到订单页面
-        setTimeout(() => {
-          this.$router.push('/orders')
-        }, 1000)
-      }
+      uni.showModal({
+        title: '确认订单',
+        content: `共 ${this.totalItems} 件商品，总金额 ¥${this.totalAmount.toFixed(2)}，确认提交订单吗？`,
+        success: (res) => {
+          if (res.confirm) {
+            // 保存订单到本地存储
+            this.saveOrder()
+            
+            uni.showToast({
+              title: '订单提交成功',
+              icon: 'success'
+            })
+            
+            // 清空购物车
+            this.cartItems = []
+            this.updateCart()
+            
+            // 跳转到订单页面
+            setTimeout(() => {
+              uni.switchTab({ url: '/pages/orders/orders' })
+            }, 1000)
+          }
+        }
+      })
     },
     
     saveOrder() {
-      const orders = JSON.parse(localStorage.getItem('orders') || '[]')
+      const orders = uni.getStorageSync('orders') || []
       const orderNo = 'PO' + Date.now()
       
       const newOrder = {
@@ -172,7 +202,7 @@ export default {
       }
       
       orders.unshift(newOrder) // 新订单添加到开头
-      localStorage.setItem('orders', JSON.stringify(orders))
+      uni.setStorageSync('orders', orders)
     },
     
     formatTime(date) {
@@ -187,7 +217,7 @@ export default {
     },
     
     goShopping() {
-      this.$router.push('/')
+      uni.switchTab({ url: '/pages/index/index' })
     }
   }
 }

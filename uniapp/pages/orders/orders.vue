@@ -71,12 +71,15 @@ export default {
       orders: []
     }
   },
-  mounted() {
+  onLoad() {
+    this.loadOrders()
+  },
+  onShow() {
     this.loadOrders()
   },
   methods: {
     loadOrders() {
-      const orders = JSON.parse(localStorage.getItem('orders') || '[]')
+      const orders = uni.getStorageSync('orders') || []
       // 为每个订单添加显示详情的状态
       this.orders = orders.map(order => ({
         ...order,
@@ -105,43 +108,61 @@ export default {
     },
     
     cancelOrder(order) {
-      if (confirm('确定要取消这个订单吗？')) {
-        // 更新订单状态
-        order.status = '已取消'
-        this.saveOrders()
-        
-        alert('订单已取消')
-      }
+      uni.showModal({
+        title: '确认取消',
+        content: '确定要取消这个订单吗？',
+        success: (res) => {
+          if (res.confirm) {
+            // 更新订单状态
+            order.status = '已取消'
+            this.saveOrders()
+            
+            uni.showToast({
+              title: '订单已取消',
+              icon: 'success'
+            })
+          }
+        }
+      })
     },
     
     reorder(order) {
-      if (confirm(`将 ${order.totalItems} 件商品添加到购物车吗？`)) {
-        // 获取当前购物车
-        const currentCart = JSON.parse(localStorage.getItem('cart') || '[]')
-        
-        // 添加订单商品到购物车（如果已存在则累加数量）
-        order.items.forEach(orderItem => {
-          const existingItem = currentCart.find(cartItem => 
-            cartItem.id === orderItem.id && cartItem.shopName === orderItem.shopName
-          )
-          
-          if (existingItem) {
-            existingItem.count += orderItem.count
-          } else {
-            currentCart.push({ ...orderItem })
+      uni.showModal({
+        title: '再次购买',
+        content: `将 ${order.totalItems} 件商品添加到购物车吗？`,
+        success: (res) => {
+          if (res.confirm) {
+            // 获取当前购物车
+            const currentCart = uni.getStorageSync('cart') || []
+            
+            // 添加订单商品到购物车（如果已存在则累加数量）
+            order.items.forEach(orderItem => {
+              const existingItem = currentCart.find(cartItem => 
+                cartItem.id === orderItem.id && cartItem.shopName === orderItem.shopName
+              )
+              
+              if (existingItem) {
+                existingItem.count += orderItem.count
+              } else {
+                currentCart.push({ ...orderItem })
+              }
+            })
+            
+            // 保存购物车
+            uni.setStorageSync('cart', currentCart)
+            
+            uni.showToast({
+              title: '已添加到购物车',
+              icon: 'success'
+            })
+            
+            // 跳转到购物车
+            setTimeout(() => {
+              uni.switchTab({ url: '/pages/cart/cart' })
+            }, 1000)
           }
-        })
-        
-        // 保存购物车
-        localStorage.setItem('cart', JSON.stringify(currentCart))
-        
-        alert('已添加到购物车')
-        
-        // 跳转到购物车
-        setTimeout(() => {
-          this.$router.push('/cart')
-        }, 1000)
-      }
+        }
+      })
     },
     
     saveOrders() {
@@ -149,11 +170,11 @@ export default {
         const { showDetails, ...orderData } = order
         return orderData
       })
-      localStorage.setItem('orders', JSON.stringify(ordersToSave))
+      uni.setStorageSync('orders', ordersToSave)
     },
     
     goShopping() {
-      this.$router.push('/')
+      uni.switchTab({ url: '/pages/index/index' })
     }
   }
 }

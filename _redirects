@@ -1,5 +1,19 @@
-# SPA fallback
+# Netlify重定向配置文件
+# 用于支持单页应用(SPA)路由
+
+# SPA回退 - 所有未匹配的路径重定向到index.html
 /*    /index.html   200
+
+# 未来可能的重定向规则示例:
+# /shop    /index.html   200
+# /cart    /index.html   200  
+# /orders  /index.html   200
+
+# API代理示例(如果需要):
+# /api/*   http://localhost:3000/api/:splat   200
+
+# 旧URL重定向示例(如果需要):
+# /old-page   /new-page   301
 
 
 

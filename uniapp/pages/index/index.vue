@@ -37,20 +37,28 @@ export default {
 			cartTotal: 0
 		}
 	},
-	mounted() {
+	onLoad() {
 		// 从数据中获取所有商家名称
 		this.shopNames = Object.keys(goodsData)
 		this.loadCartTotal()
 	},
+	onShow() {
+		// 每次显示页面时更新购物车数量
+		this.loadCartTotal()
+	},
 	methods: {
 		goToShop(shopName) {
-			this.$router.push(`/shop/${encodeURIComponent(shopName)}`)
+			uni.navigateTo({
+				url: `/pages/shop/shop?shopName=${encodeURIComponent(shopName)}`
+			})
 		},
 		goToCart() {
-			this.$router.push('/cart')
+			uni.switchTab({
+				url: '/pages/cart/cart'
+			})
 		},
 		loadCartTotal() {
-			const cart = JSON.parse(localStorage.getItem('cart') || '[]')
+			const cart = uni.getStorageSync('cart') || []
 			this.cartTotal = cart.reduce((sum, item) => sum + item.count, 0)
 		}
 	}

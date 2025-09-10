@@ -60,9 +60,9 @@
 import goodsData from "/static/data.json"
 
 export default {
-  props: ['shopName'],
   data() {
     return {
+      shopName: '',
       shopGoods: [],
       cart: []
     }
@@ -75,8 +75,10 @@ export default {
       return this.cart.reduce((sum, g) => sum + (g.price * g.count), 0)
     }
   },
-  mounted() {
-    console.log('接收到的参数:', this.shopName)
+  onLoad(options) {
+    console.log('接收到的参数:', options)
+    this.shopName = options.shopName || options.shop
+    console.log('商家名称:', this.shopName)
     console.log('可用商家:', Object.keys(goodsData))
     
     if (this.shopName && goodsData[this.shopName]) {
@@ -87,7 +89,10 @@ export default {
       this.loadCartFromStorage()
     } else {
       console.error('未找到商家:', this.shopName)
-      alert('商家不存在')
+      uni.showToast({
+        title: '商家不存在',
+        icon: 'none'
+      })
     }
   },
   methods: {
@@ -107,10 +112,10 @@ export default {
         shopName: this.shopName
       }))
       // 持久化到本地缓存
-      localStorage.setItem("cart", JSON.stringify(this.cart))
+      uni.setStorageSync("cart", this.cart)
     },
     loadCartFromStorage() {
-      const savedCart = JSON.parse(localStorage.getItem("cart") || '[]')
+      const savedCart = uni.getStorageSync("cart") || []
       // 恢复当前商家的商品数量
       savedCart.forEach(cartItem => {
         if (cartItem.shopName === this.shopName) {
@@ -123,10 +128,10 @@ export default {
       this.updateCart()
     },
     goCart() {
-      this.$router.push("/cart")
+      uni.switchTab({ url: "/pages/cart/cart" })
     },
     goOrders() {
-      this.$router.push("/orders")
+      uni.switchTab({ url: "/pages/orders/orders" })
     }
   }
 }
